@@ -1,0 +1,7 @@
+[
+  {
+    "directory": "/home/boris/dev/hw2/build",
+    "command": "c++ -Isrc/myproject/7e0409d@@hw2@exe -Isrc/myproject -I../src/myproject -Isrc -I../src -fdiagnostics-color=always -pipe -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wnon-virtual-dtor -g -MD -MQ 'src/myproject/7e0409d@@hw2@exe/main.cpp.o' -MF 'src/myproject/7e0409d@@hw2@exe/main.cpp.o.d' -o 'src/myproject/7e0409d@@hw2@exe/main.cpp.o' -c ../src/myproject/main.cpp",
+    "file": "../src/myproject/main.cpp"
+  }
+]
