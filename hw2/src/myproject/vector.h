@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cassert>
+#include <utility>
 
 template <class T> class vector
 {
@@ -15,17 +16,17 @@ template <class T> class vector
 
     vector(const vector& vec);
     vector(vector&& x);
-    T& operator= (const T& vec);
-    T& operator= (T&& vec);
+    vector<T>& operator= (const vector<T>& vec);
+    vector<T>& operator= (vector<T>&& vec);
 
     T* begin() { return this->data; }
     size_t size() { return length; }
     T* end() { return this->data + length; }
 
     void push_back(const T& val);
-    //void push_back(T&& val);
+    void push_back(T&& val);
 
-    void erase(size_t pos);
+    T* erase(T*);
     void pop_back(){
         erase(length-1);
         return;
@@ -40,8 +41,8 @@ template <class T> class vector
 
 template<class T> 
 vector<T>::vector(vector&& x): length(x.length){
-    data = x->data;
-    x->data = nullptr;
+    data = x.data;
+    x.data = nullptr;
     x.length = 0;
 }
 
@@ -70,91 +71,73 @@ vector<T>::vector(size_t len, const T& buf): length(len) {
 }
 
 template<class T>
-T& vector<T>::operator= (const T& vec) {
+vector<T>& vector<T>::operator= (const vector<T>& vec) {
     if (&vec == this)
         return *this;
-    length = vec.lenght;
+    vector<T> buf(vec);
     delete[] data;
-    data = new T[vec.length];
-    for(size_t i = 0; i < vec.length; ++i)
-        data[i] = vec[i];
+    swap(buf);
     return *this;
 }
 
 template<class T>
-T& vector<T>::operator= (T&& vec) {
+vector<T>& vector<T>::operator= (vector<T>&& vec) {
     if (&vec == this)
         return *this;
-    length = vec.lenght;
-    vec.length = 0;
     delete[] data;
-    data = vec.data;
-    vec.data = nullptr;
+    swap(vec);
     return *this;
 }
 
-template<class T> 
-void vector<T>::erase(size_t pos){
-    assert(pos >= 0 && pos < length && "wrong index");
-    if (!pos) {
-        T* n_data = new T[length-1];
-        for(size_t i = 0; i < length - 1; ++i)
-            n_data[i] = data[i+1];
-        delete[] data;
-        data = n_data;
+template<class T>
+T* vector<T>::erase(T* pos){
+    assert(pos >= begin() && pos < end() && "wrong iterator");
+    T* ans = pos + 1;
+    if (pos == end()-1){
+        pos->~T();
         length--;
-        return;
+        return ans;
     }
-    else if (pos == length - 1){
-        T* n_data = new T[length-1];
-        for(size_t i = 0; i < length - 1; ++i)
-            n_data[i] = data[i];
-        delete[] data;
-        data = n_data;
-        length--;
-        return;
+    T* i = pos;
+    while(i < end()-1){
+        *pos = std::move(*(++i));
+        ++pos;
     }
-    else {
-        T* n_data = new T[length-1];
-        for(size_t i = 0; i < pos; ++i)
-            n_data[i] = data[i];
-        for(size_t i = pos + 1; i < length; ++i)
-            n_data[i-1] = data[i];
-        delete[] data;
-        data = n_data;
-        length--;
-        return;
-    }
+    i->~T();
+    length--;
+    return ans;
 }
 
 template<class T> 
 void vector<T>::push_back(const T& val){
     T* n_data = new T[length + 1];
     for (size_t i = 0; i < length; ++i) 
-        n_data[i] = data[i];
+        n_data[i] = std::move(data[i]);
     n_data[length] = val;
     delete[] data;
     data = n_data;
     length++;
-    std::cout << "lvalue" << '\n';
+    //std::cout << "lvalue" << '\n';
 }
-
-// template<class T> 
-// void vector<T>::push_back(T&& val){
-//     T* n_data = new T[length + 1];
-//     for (size_t i = 0; i < length; ++i) 
-//         n_data[i] = data[i];
-//     n_data[length] = val;
-//     delete[] data;
-//     data = n_data;
-//     length++;
-//     std::cout << "rvalue" << '\n';
-// }
 
 template<class T> 
-void vector<T>::swap(vector& vec){
-    vector<T> buf = *this;
-    *this = vec;
-    vec = buf;
+void vector<T>::push_back(T&& val){
+    T* n_data = new T[length + 1];
+    for (size_t i = 0; i < length; ++i) 
+        n_data[i] = std::move(data[i]);
+    n_data[length] = std::move(val);
+    delete[] data;
+    data = n_data;
+    length++;
+    //std::cout << "rvalue" << '\n';
 }
 
+template<class T> 
+void vector<T>::swap(vector<T>& vec){
+    using std::swap;
+    swap(length, vec.length);
+    swap(data, vec.data);
+}
+
+template <class T>
+void swap (vector<T>& x, vector<T>& y){ x.swap(y); }
