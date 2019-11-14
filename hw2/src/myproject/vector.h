@@ -55,7 +55,6 @@ vector<T>::vector(const vector& vec): length(vec.length){
 
 template<class T> 
 vector<T>::vector(size_t len): length(len) {
-    assert(len >= 0 && "the length of the vector must be nonnegative");
     if (len > 0) 
         data = new T[len];
     else
@@ -64,7 +63,6 @@ vector<T>::vector(size_t len): length(len) {
 
 template<class T> 
 vector<T>::vector(size_t len, const T& buf): length(len) {
-    assert(len > 0 && "the length of the vector must be posetive");
     data = new T[len];
     for(size_t i = 0; i < len; ++i)
         data[i] = buf;
@@ -75,7 +73,6 @@ vector<T>& vector<T>::operator= (const vector<T>& vec) {
     if (&vec == this)
         return *this;
     vector<T> buf(vec);
-    delete[] data;
     swap(buf);
     return *this;
 }
@@ -84,7 +81,6 @@ template<class T>
 vector<T>& vector<T>::operator= (vector<T>&& vec) {
     if (&vec == this)
         return *this;
-    delete[] data;
     swap(vec);
     return *this;
 }
