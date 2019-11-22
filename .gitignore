@@ -1,0 +1,4 @@
+*.vscode
+/hw2/file*
+*build
+
