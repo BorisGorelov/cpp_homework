@@ -41,13 +41,33 @@ auto cat (std::array<T, N> const& head, Args&& ... tail){
 }
 
 
-// template<class T,int N,int M>
-// struct Tie {
-//     void operator=(const std::array<T,N*M>& rhs);
-// };
+template<class T,int N,int M>
+struct Tie {
+    std::array<T*, M> data;
+    Tie(std::array<T*, M> arr) : data(arr){}
+    void operator=(const std::array<T,N*M>& rhs) {
+        int count = 0;
+        for(int i = 0; i < M; ++i) {
+            for(int j = 0; j < N; ++j) 
+                data[i][j] = *(rhs.data() + count + j);
+            count += N;
+        }
+    }
+};
 
-// template<class Tie, class... Args>
-// Tie tie()
+template<class T, size_t N, class... Args>
+auto array_tie(std::array<T, N> & head, Args&& ... tail) -> Tie<T, N, sizeof...(tail)+1> {
+    std::array<T*, sizeof...(tail) + 1> arr {head.data(), std::forward<Args>(tail).data()...};
+    return Tie<T, N, sizeof...(tail) + 1>(arr);
+}
+
+// namespace detail {
+// struct ignore_t {
+//     template <typename T>
+//     const ignore_t& operator=(const T&) const { return *this; }
+// };
+// }
+// const detail::ignore_t ignore;
 
 
 
