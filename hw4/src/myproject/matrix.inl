@@ -90,3 +90,8 @@ template <class T>
 bool Matrix<T>::is_symmetric(double eps){
     return all(matrixAbs(*this - this->transposed()) < eps);
 }
+
+template <class T>
+bool Matrix<T>::operator==(const Matrix<T>& m) const {
+    return (this->data == m.data);
+}

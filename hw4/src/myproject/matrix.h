@@ -12,5 +12,6 @@ class Matrix{
         bool is_symmetric(double); 
         Matrix<T> operator-(const Matrix<T>&) const;
         Matrix<char> operator<(double) const;  
+        bool operator==(const Matrix<T>&) const;
 };
 #include "matrix.inl"
