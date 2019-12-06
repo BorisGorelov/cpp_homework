@@ -1,10 +1,8 @@
 gtest = dependency('gtest', main: true)
-test(
-    'func',
-    executable(
-        'left_turn_test',
+turn = executable(
+        'turn_exe',
         sources: ['tests.cpp'],
         include_directories: src,
         dependencies: [gtest]
     )
-)
+test('turn_test', turn)
