@@ -56,7 +56,7 @@ bool all(const Matrix<T>& m){
 }
 
 template <class T>
-Matrix<T> Matrix<T>::transposed(){
+Matrix<T> Matrix<T>::transposed() const{
     size_t size = static_cast<size_t>(sqrt(data.size()));
     Matrix<T> ans;
     ans.data.resize(data.size());
@@ -87,7 +87,7 @@ Matrix<char> Matrix<T>::operator<(double d) const{
 }
 
 template <class T>
-bool Matrix<T>::is_symmetric(double eps){
+bool Matrix<T>::is_symmetric(double eps) const{
     return all(matrixAbs(*this - this->transposed()) < eps);
 }
 
