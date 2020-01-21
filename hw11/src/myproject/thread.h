@@ -29,7 +29,8 @@ class Thread {
         }
 
         ~Thread(){
-            CHECK(kill(pid, SIGTERM));
+            if (joinable())
+                CHECK(kill(pid, SIGTERM));
         }
 
         int join(){
