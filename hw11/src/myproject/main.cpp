@@ -8,7 +8,7 @@ int foo(void*){
 
 int main(){
     std::cout << "hi\n";
-    Thread t(foo);
+    Thread t(foo, NULL);
     t.join();
     std::cout << "hi\n";
     return 0;
