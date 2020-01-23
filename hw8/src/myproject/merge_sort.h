@@ -3,6 +3,7 @@
 #include <tuple>
 #include <functional>
 #include "../../../hw11/src/myproject/thread.h"
+#include <thread>
 
 template<class T>
 void merge(std::vector<T>& a, int left, int mid, int right){
@@ -38,6 +39,23 @@ void mergeSort(std::vector<T>& a, int left, int right){
     int mid = (left + right)/2;
     mergeSort(a, left, mid);
     mergeSort(a, mid, right);
+    merge(a, left, mid, right);
+}
+
+//template <class T>
+void mergeSortMT_std(std::vector<double>& a, int left, int right){
+    if (left + 1 >= right)
+        return;
+    int mid = (left + right)/2;
+    if (right - left > 20000) {
+        std::thread t(mergeSortMT_std, std::ref(a), left, mid);
+        mergeSortMT_std(std::ref(a), mid, right);
+        t.join();
+    }
+    else {
+        mergeSortMT_std(std::ref(a), left, mid);
+        mergeSortMT_std(std::ref(a), mid, right);
+    }
     merge(a, left, mid, right);
 }
 
